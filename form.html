@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PUT Request Example</title>
+  </head>
+  <body>
+    <form>
+      <label for="fname">First Name:</label>
+      <input type="text" id="fname" name="fname" /><br /><br />
+
+      <label for="lname">Last Name:</label>
+      <input type="text" id="lname" name="lname" /><br /><br />
+
+      <label for="newFirstName">New First Name:</label>
+      <input type="text" id="newFname" name="newFirstName" /><br /><br />
+
+      <select id="method">
+        <option value="GET">GET</option>
+        <option value="POST">POST</option>
+        <option value="PUT">PUT</option>
+        <option value="DELETE">DELETE</option>
+      </select>
+
+      <input type="button" value="Submit" onclick="submitForm()" />
+    </form>
+
+    <script>
+      function submitForm() {
+        var firstName = document.getElementById("fname").value;
+        var lastName = document.getElementById("lname").value;
+        var newFirstName = document.getElementById("newFname").value;
+        var method = document.getElementById("method").value;
+
+        var data = {};
+        if (method === "POST") {
+          if (!lastName || !firstName) {
+            console.error("Missing input field value");
+            return;
+          }
+          data = {
+            fname: firstName,
+            lname: lastName,
+          };
+        } else if (method === "PUT") {
+          if (!newFirstName || !firstName) {
+            console.error("Missing input field value");
+            return;
+          }
+          data = {
+            fname: firstName,
+            newFname: newFirstName,
+          };
+        } else if (method === "DELETE") {
+            if (!firstName) {
+            console.error("Missing input field value");
+            }
+          data = {
+            fname: firstName,
+          };
+        } else {
+          data = null; // remove the request body for GET requests
+        }
+
+        console.log(data);
+        fetch("http://localhost:8080/", {
+          method: method,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: method === "GET" ? null : JSON.stringify(data), // only include the request body for non-GET requests
+        })
+          .then((response) => response.text())
+          .then((data) => console.log(data))
+          .catch((error) => console.error(error));
+      }
+    </script>
+  </body>
+</html>
